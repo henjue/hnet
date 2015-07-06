@@ -1,4 +1,16 @@
 # hnet
+```
+@FormUrlEncoded
+public interface UserService {
+    //异步请求
+    @Post("/user/login")
+    void login(String name,String pwd,Callback<LoginResponse> callback);
+
+    //同步请求
+    @Post("/user/login")
+    LoginResponse login2(String name,String pwd);
+}
+```java
 
 基于注解的Restful api 风格网络框架，用最少的代码实现网络请求
 
