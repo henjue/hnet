@@ -1,0 +1,2 @@
+include ':demo', ':library'
+project(':library').name = 'hnet'
