@@ -1,14 +1,18 @@
 # hnet
 
+
 ## Android Studio (Gradle)
-version is click [here](https://github.com/henjue/hnet/tags) see this tags
 ```gradle
     compile 'org.henjue.library:hnet:1.0.0_beta2'
 ```
+version is click [here](https://github.com/henjue/hnet/tags) see this tags
+
+
 ## Eclipse
 #### he he 
 
 
+## fast sample
 ```java
 @FormUrlEncoded
 public interface UserService {
