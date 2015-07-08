@@ -16,12 +16,12 @@
 package org.henjue.library.hnet.exception;
 
 public class ConversionException extends Exception {
-    public ConversionException(String message) {
-        super(message);
+    public ConversionException(String content) {
+        super(String.format("Content Data is (%s)",content));
     }
 
-    public ConversionException(String message, Throwable throwable) {
-        super(message, throwable);
+    public ConversionException(String content, Throwable throwable) {
+        super(String.format("Content Data is (%s)",content), throwable);
     }
 
     public ConversionException(Throwable throwable) {
