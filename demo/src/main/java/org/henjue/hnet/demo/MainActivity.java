@@ -59,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
 //        service.getByPath("henjue", callback);
 //        service.getByQuery("henjue", callback);
         service.postForm(189, 1, "4c6a32ac439d8a355215f9c956bdf72c", callback);
-        service.postMulti(1, "4c6a32ac439d8a355215f9c956bdf72c", callback);
-        TypedFile file = new TypedFile("image/jpg", new File(Environment.getExternalStorageDirectory(), "img111.jpg"));
-        service.upload("4c6a32ac439d8a355215f9c956bdf72c", file, callback);
+//        service.postMulti(1, "4c6a32ac439d8a355215f9c956bdf72c", callback);
+//        TypedFile file = new TypedFile("image/jpg", new File(Environment.getExternalStorageDirectory(), "img111.jpg"));
+//        service.upload("4c6a32ac439d8a355215f9c956bdf72c", file, callback);
 //        service.upload2("4c6a32ac439d8a355215f9c956bdf72c", file, 66, callback);
 //        service.upload3("4c6a32ac439d8a355215f9c956bdf72c", file, 66, "file", callback);
 //

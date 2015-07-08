@@ -56,7 +56,7 @@ public class RequestBuilder implements RequestFacade {
     private List<Header> headers;
     private String contentTypeHeader;
 
-    RequestBuilder(String apiUrl, RequestFilter filter, boolean appendPath, boolean callIntercept, MethodInfo info, Converter converter, RequestIntercept intercept) {
+    RequestBuilder(String apiUrl, RequestFilter filter, boolean callIntercept, boolean appendPath, MethodInfo info, Converter converter, RequestIntercept intercept) {
         if (info.endpointUrl == null) {
             this.apiUrl = apiUrl;
         } else {
@@ -354,7 +354,7 @@ public class RequestBuilder implements RequestFacade {
 
             url.append(relativeUrl);
         }else{
-            url=new StringBuilder(relativeUrl);
+            url=new StringBuilder(this.apiUrl);
         }
         StringBuilder queryParams = this.queryParams;
         if (queryParams != null) {

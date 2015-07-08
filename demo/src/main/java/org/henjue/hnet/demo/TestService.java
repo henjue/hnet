@@ -34,7 +34,8 @@ public interface TestService {
     void getByQuery(@Query("username") String name, Callback<Object> callback);
 
     @Filter(DownloadFilter.class)
-    @Post("/hall/getallcontents")
+    @Post(value = "/hall/getallcontents",append = false)
+    @Endpoint("http://www.baidu.com")
     void postForm(@Param("uid") long uid,
                   @Param("page") int page,
                   @Param("token") String token,
