@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "org.henjue.hnet.demo"
-        minSdkVersion 19
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
