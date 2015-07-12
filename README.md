@@ -1,7 +1,8 @@
 # hnet
-## Build:
-
 ## 基于注解的Restful api 风格网络框架，用最少的代码实现网络请求
+
+
+## Build:
 
 ![build status](https://travis-ci.org/henjue/hnet.svg?branch=master)
 
