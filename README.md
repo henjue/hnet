@@ -3,9 +3,9 @@
 
 ## Android Studio (Gradle)
 ```gradle
-    compile 'org.henjue.library:hnet:1.0.0_beta2'
+    compile 'org.henjue.library:hnet:${last_version}'
 ```
-version is click [here](https://github.com/henjue/hnet/tags) see this tags
+*last_version* is click [here](https://jcenter.bintray.com/org/henjue/library/hnet/) see this list!
 
 
 ## Eclipse
