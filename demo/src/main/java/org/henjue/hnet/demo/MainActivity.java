@@ -1,20 +1,15 @@
 package org.henjue.hnet.demo;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import org.henjue.library.hnet.RequestIntercept;
 import org.henjue.library.hnet.Callback;
 import org.henjue.library.hnet.HNet;
 import org.henjue.library.hnet.RequestFacade;
+import org.henjue.library.hnet.RequestIntercept;
 import org.henjue.library.hnet.Response;
 import org.henjue.library.hnet.exception.HNetError;
-import org.henjue.library.hnet.typed.TypedFile;
 
-import java.io.File;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,27 +89,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     private class MyIntercept implements RequestIntercept {
         private HashMap<String, String> params = new HashMap<>();

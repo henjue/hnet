@@ -5,9 +5,7 @@ import android.util.Log;
 import org.henjue.library.hnet.RequestFacade;
 import org.henjue.library.hnet.RequestFilter;
 
-/**
- * Created by android on 15-7-1.
- */
+
 public class DownloadFilter implements RequestFilter {
     @Override
     public void onComplite(RequestFacade request) {

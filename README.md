@@ -1,32 +1,22 @@
 # hnet
+## Build:
 
+## 基于注解的Restful api 风格网络框架，用最少的代码实现网络请求
 
-## Android Studio (Gradle)
-```gradle
-    compile 'org.henjue.library:hnet:1.0.0_beta2'
+![build status](https://travis-ci.org/henjue/hnet.svg?branch=master)
+
+Use Document to [See](http://www.j99.so/2015/07/12/HNet-Android-Fast-Network-Framework-HNet-Android-%E7%BD%91%E7%BB%9C%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/)!
+
+## 关于代码混淆
+在proguard-rules.pro中加入以下部分:
+
 ```
-version is click [here](https://github.com/henjue/hnet/tags) see this tags
-
-
-## Eclipse
-#### he he 
-
-
-## fast sample
-```java
-@FormUrlEncoded
-public interface UserService {
-    //异步请求
-    @Post("/user/login")
-    void login(String name,String pwd,Callback<LoginResponse> callback);
-
-    //同步请求
-    @Post("/user/login")
-    LoginResponse login2(String name,String pwd);
-}
+-keepattributes *Annotation*
+-keep class org.henjue.library.hnet.anntoation.** {*;}
+-keep class * implements org.henjue.library.hnet.RequestFilter {*;}
 ```
 
-基于注解的Restful api 风格网络框架，用最少的代码实现网络请求
+
 
 ## 注解说明
 ```java
