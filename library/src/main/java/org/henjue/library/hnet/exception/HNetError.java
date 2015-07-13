@@ -104,6 +104,20 @@ public class HNetError extends RuntimeException {
         }
     }
 
+    @Override
+    public void printStackTrace() {
+        super.printStackTrace();
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb=new StringBuffer("\n");
+        sb.append("===============================").append("\n");
+        sb.append("url=").append(url);
+        sb.append("===============================").append("\n");
+        return super.toString()+sb.toString();
+    }
+
     public enum Kind {
         /**
          * 和服务器通讯发生问题
