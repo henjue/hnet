@@ -3,8 +3,10 @@
 
 
 ## Build:
-
 ![build status](https://travis-ci.org/henjue/hnet.svg?branch=master)
+
+## Last Version:
+[ ![Download](https://api.bintray.com/packages/henjue/maven/hnet/images/download.svg) ](https://bintray.com/henjue/maven/hnet/_latestVersion)
 
 Use Document to [See](http://www.j99.so/2015/07/12/HNet-Android-Fast-Network-Framework-HNet-Android-%E7%BD%91%E7%BB%9C%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/)!
 

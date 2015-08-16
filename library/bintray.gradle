@@ -1,14 +1,11 @@
 /**
  *  root script add :
- *  dependencies {
- *     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
- *    classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
- }
- **/
+ *  dependencies {*     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+ *    classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'}**/
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-version='1.0.0_beta2';
+version = '1.0.0_beta3';
 
 def siteUrl = 'https://github.com/henjue/hnet'
 def gitUrl = 'https://github.com/henjue/hnet.git'
@@ -57,7 +54,7 @@ task sourcesJar(type: Jar) {
 task javadoc(type: Javadoc) {
     android.libraryVariants.all { variant ->
         println variant.javaCompile.classpath.files
-        if(variant.name == 'release') {
+        if (variant.name == 'release') {
             task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
                 // title = ''
                 // description = ''
@@ -88,7 +85,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 javadoc {
-    options{
+    options {
         encoding "UTF-8"
         charSet 'UTF-8'
         author true
@@ -117,4 +114,4 @@ bintray {
     }
 }
 
-bintrayUpload.dependsOn(javadocJar,sourcesJar,install)
+bintrayUpload.dependsOn(javadocJar, sourcesJar, install)
