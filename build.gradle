@@ -3,6 +3,7 @@
 buildscript {
     repositories {
         jcenter { url JCENTER_URL }
+        jcenter()
         maven { url SONATYPE_URL }
 
     }
@@ -20,6 +21,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter { url JCENTER_URL }
+        jcenter()
         maven { url SONATYPE_URL }
     }
 }
