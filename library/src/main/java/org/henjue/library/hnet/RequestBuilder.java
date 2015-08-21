@@ -62,11 +62,11 @@ public class RequestBuilder implements RequestFacade {
         } else {
             this.apiUrl = info.endpointUrl;
         }
-        this.appendPath=appendPath;
-        this.callIntercept=callIntercept;
+        this.appendPath = appendPath;
+        this.callIntercept = callIntercept;
         this.intercept = intercept;
         this.converter = converter;
-        this.filter=filter;
+        this.filter = filter;
         paramAnnotations = info.requestParamAnnotations;
         this.requestType = info.requestType;
         isSync = info.isSynchronous;
@@ -103,10 +103,6 @@ public class RequestBuilder implements RequestFacade {
         }
     }
 
-    public String getRelativeUrl() {
-        return relativeUrl;
-    }
-
 
     void bindArgs(Object[] args, RequestIntercept intercept) {
         if (args == null) {
@@ -116,8 +112,8 @@ public class RequestBuilder implements RequestFacade {
         if (!isSync) {
             count -= 1;
         }
-            filter.onStart(this);
-        if(callIntercept) intercept.onStart(this);
+        filter.onStart(this);
+        if (callIntercept) intercept.onStart(this);
         for (int i = 0; i < count; i++) {
             Object value = args[i];
             Annotation annotation = paramAnnotations[i];
@@ -141,22 +137,22 @@ public class RequestBuilder implements RequestFacade {
                     String name = field.value();
                     boolean encodeName = field.encodeName();
                     boolean encodeValue = field.encodeValue();
-                    addToForm(name,value,encodeName,encodeValue);
+                    addToForm(name, value, encodeName, encodeValue);
                 }
-            } else if(type== Param.class){
-                if(requestType== MethodInfo.RequestType.FORM_URL_ENCODED){
+            } else if (type == Param.class) {
+                if (requestType == MethodInfo.RequestType.FORM_URL_ENCODED) {
                     Param field = (Param) annotation;
                     String name = field.value();
                     boolean encodeName = field.encodeName();
                     boolean encodeValue = field.encodeValue();
-                    addToForm(name,value,encodeName,encodeValue);
-                }else if(requestType== MethodInfo.RequestType.MULTIPART){
+                    addToForm(name, value, encodeName, encodeValue);
+                } else if (requestType == MethodInfo.RequestType.MULTIPART) {
                     String name = ((Param) annotation).value();
                     String transferEncoding = ((Param) annotation).encoding();
                     addPart(name, transferEncoding, value);
                 }
 
-            }else if (type == Part.class) {
+            } else if (type == Part.class) {
                 if (value != null) { // Skip null values.
                     String name = ((Part) annotation).value();
                     String transferEncoding = ((Part) annotation).encoding();
@@ -198,7 +194,8 @@ public class RequestBuilder implements RequestFacade {
 
         }
     }
-    private void addToForm(String key,Object value,boolean encodeName,boolean encodeValue){
+
+    private void addToForm(String key, Object value, boolean encodeName, boolean encodeValue) {
         if (value instanceof Iterable) {
             for (Object iterableValue : (Iterable<?>) value) {
                 if (iterableValue != null) { // Skip null values.
@@ -218,6 +215,7 @@ public class RequestBuilder implements RequestFacade {
             addField(key, encodeName, String.valueOf(value), encodeValue);
         }
     }
+
     private void addQueryParam(String name, String value, boolean encodeName, boolean encodeValue) {
         if (name == null) {
             throw new IllegalArgumentException("Query param name must not be null.");
@@ -285,7 +283,7 @@ public class RequestBuilder implements RequestFacade {
 
     @Override
     public void add(String name, Object obj) {
-        if(obj==null)return;
+        if (obj == null) return;
         switch (requestType) {
             case FORM_URL_ENCODED:
                 addField(name, true, String.valueOf(obj), true);
@@ -301,6 +299,11 @@ public class RequestBuilder implements RequestFacade {
         }
     }
 
+    @Override
+    public String getPath() {
+        return relativeUrl;
+    }
+
     public void addPart(String name, String transferEncoding, Object obj) {
         if (obj instanceof TypedOutput) {
             multipartBody.addPart(name, transferEncoding, (TypedOutput) obj);
@@ -309,12 +312,13 @@ public class RequestBuilder implements RequestFacade {
         } else {
             multipartBody.addPart(name, transferEncoding, converter.toBody(obj));
         }
-        filter.onAdd(name,obj);
-        if(callIntercept) intercept.onAdd(name, obj);
+        filter.onAdd(name, obj);
+        if (callIntercept) intercept.onAdd(name, obj);
     }
 
     public void addField(String name, boolean encodeName, String value, boolean encodeValue) {
-        if (formBody != null) formBody.addField(callIntercept,intercept,filter, name, encodeName, value, encodeValue);
+        if (formBody != null)
+            formBody.addField(callIntercept, intercept, filter, name, encodeName, value, encodeValue);
     }
 
     private void addPathParam(String name, String value, boolean urlEncodeValue) {
@@ -344,7 +348,7 @@ public class RequestBuilder implements RequestFacade {
 
     public Request build() throws UnsupportedEncodingException {
         final StringBuilder url;
-        if(appendPath) {
+        if (appendPath) {
             String apiUrl = this.apiUrl;
             url = new StringBuilder(apiUrl);
             if (apiUrl.endsWith("/")) {
@@ -353,8 +357,8 @@ public class RequestBuilder implements RequestFacade {
             }
 
             url.append(relativeUrl);
-        }else{
-            url=new StringBuilder(this.apiUrl);
+        } else {
+            url = new StringBuilder(this.apiUrl);
         }
         StringBuilder queryParams = this.queryParams;
         if (queryParams != null) {

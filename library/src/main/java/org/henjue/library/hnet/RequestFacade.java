@@ -28,8 +28,11 @@ public interface RequestFacade {
 
     /**
      * 添加field/part/query/根据当前方法请求类型而确定
+     *
      * @param name
      * @param obj
      */
-    void add(String name,Object obj);
+    void add(String name, Object obj);
+
+    String getPath();
 }
