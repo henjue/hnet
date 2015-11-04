@@ -58,6 +58,7 @@ public class HNet {
     private final RequestIntercept intercept;
     private final ClientStack.Provider clientProvider;
     volatile LogLevel logLevel;
+
     private HNet(Endpoint server, ClientStack.Provider clientProvider, RequestIntercept intercept, Executor httpExecutor, Executor callbackExecutor, Converter converter, ErrorHandler errorHandler, Log log, LogLevel logLevel) {
         this.server = server;
         this.clientProvider = clientProvider;
@@ -90,6 +91,7 @@ public class HNet {
             log.log(convert.toString());
         }
     }
+
     /**
      * Log an exception that occurred during the processing of a request or response.
      */
@@ -111,7 +113,10 @@ public class HNet {
         log.log(sw.toString());
         log.log("---- END ERROR");
     }
-    /** Log request headers and body. Consumes request body and returns identical replacement. */
+
+    /**
+     * Log request headers and body. Consumes request body and returns identical replacement.
+     */
     Request logAndReplaceRequest(String name, Request request, Object[] args) throws IOException {
         log.log(String.format("---> %s %s %s", name, request.getMethod(), request.getUrl()));
 
@@ -163,7 +168,9 @@ public class HNet {
         return request;
     }
 
-    /** Log response headers and body. Consumes response body and returns identical replacement. */
+    /**
+     * Log response headers and body. Consumes response body and returns identical replacement.
+     */
     private Response logAndReplaceResponse(String url, Response response, long elapsedTime)
             throws IOException {
         log.log(String.format("<--- HTTP %s %s (%sms)", response.getStatus(), url, elapsedTime));
@@ -202,6 +209,7 @@ public class HNet {
 
         return response;
     }
+
     public enum LogLevel {
         NONE,
         BASIC,
@@ -231,8 +239,12 @@ public class HNet {
         private LogLevel logLevel = LogLevel.NONE;
         private RequestIntercept intercept;
 
-        public void setHttpExecutor(Executor httpExecutor) {
+        public Builder setHttpExecutor(Executor httpExecutor) {
+            if (httpExecutor == null) {
+                throw new NullPointerException("httpExecutor may not be null.");
+            }
             this.httpExecutor = httpExecutor;
+            return this;
         }
 
         public ErrorHandler getErrorHandler() {
@@ -365,15 +377,16 @@ public class HNet {
     }
 
     private class NetHandler implements InvocationHandler {
-        private MethodInfo.RequestType defaultRequestType= MethodInfo.RequestType.SIMPLE;
+        private MethodInfo.RequestType defaultRequestType = MethodInfo.RequestType.SIMPLE;
+
         public <T> NetHandler(Class<T> clazz) {
             Annotation[] ass = clazz.getAnnotations();
-            if(ass!=null){
-                for(Annotation annotation:ass){
-                    if(annotation.annotationType()== FormUrlEncoded.class){
-                        defaultRequestType= MethodInfo.RequestType.FORM_URL_ENCODED;
-                    }else if(annotation.annotationType()== Multipart.class){
-                        defaultRequestType= MethodInfo.RequestType.MULTIPART;
+            if (ass != null) {
+                for (Annotation annotation : ass) {
+                    if (annotation.annotationType() == FormUrlEncoded.class) {
+                        defaultRequestType = MethodInfo.RequestType.FORM_URL_ENCODED;
+                    } else if (annotation.annotationType() == Multipart.class) {
+                        defaultRequestType = MethodInfo.RequestType.MULTIPART;
                     }
                 }
             }
@@ -385,15 +398,15 @@ public class HNet {
             if (method.getDeclaringClass() == Object.class) {
                 return method.invoke(this, args);
             }
-            final MethodInfo info = new MethodInfo(defaultRequestType,method);
+            final MethodInfo info = new MethodInfo(defaultRequestType, method);
             if (info.isSynchronous) {
-                return invokeRequest(intercept,info, args);
+                return invokeRequest(intercept, info, args);
             }
             Callback<?> callback = (Callback<?>) args[args.length - 1];
             httpExecutor.execute(new CallbackRunnable(callback, callbackExecutor, errorHandler) {
                 @Override
                 public ResponseWrapper obtainResponse() {
-                    return (ResponseWrapper) invokeRequest(intercept,info, args);
+                    return (ResponseWrapper) invokeRequest(intercept, info, args);
                 }
             });
             return null;
@@ -408,14 +421,14 @@ public class HNet {
                 methodInfo.init();
                 String serverUrl = server.getUrl();
                 final RequestFilter filter;
-                if(methodInfo.filter!=null) {
-                  filter= methodInfo.filter.newInstance();
-                }else{
-                    filter=RequestFilter.NONE;
+                if (methodInfo.filter != null) {
+                    filter = methodInfo.filter.newInstance();
+                } else {
+                    filter = RequestFilter.NONE;
                 }
-                final RequestBuilder builder = new RequestBuilder(serverUrl, filter,methodInfo.callIntercept,methodInfo.appendPath, methodInfo, converter,intercept);
-                builder.bindArgs(args,intercept);
-                    filter.onComplite(builder);
+                final RequestBuilder builder = new RequestBuilder(serverUrl, filter, methodInfo.callIntercept, methodInfo.appendPath, methodInfo, converter, intercept);
+                builder.bindArgs(args, intercept);
+                filter.onComplite(builder);
                 intercept.onComplite(builder);
 
                 Request request = builder.build();

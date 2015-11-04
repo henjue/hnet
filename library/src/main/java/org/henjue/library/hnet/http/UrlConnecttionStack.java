@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by android on 15-6-30.
  */
-public class UrlConnecttionStack  implements ClientStack {
+public class UrlConnecttionStack implements ClientStack {
 
     private static final int CHUNK_SIZE = 4096;
 
@@ -51,13 +51,12 @@ public class UrlConnecttionStack  implements ClientStack {
         TypedOutput body = request.getBody();
         if (body != null) {
             connection.setDoOutput(true);
-            connection.addRequestProperty("Content-Type", body.mimeType());
             long length = body.length();
-            if (length != -1) {
-//                connection.setFixedLengthStreamingMode((int) length);
-                connection.addRequestProperty("Content-Length", String.valueOf(length));
-            } else {
+            if (length == -1 || body.mimeType().startsWith("multipart/form-data")) {
                 connection.setChunkedStreamingMode(CHUNK_SIZE);
+            } else {
+                connection.addRequestProperty("Content-Type", body.mimeType());
+                connection.addRequestProperty("Content-Length", String.valueOf(length));
             }
             body.writeTo(connection.getOutputStream());
         }

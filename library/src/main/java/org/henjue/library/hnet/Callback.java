@@ -25,4 +25,24 @@ public interface Callback<T> {
     void failure(HNetError error);
 
     void end();
+
+    abstract class SimpleCallBack<T> implements Callback<T> {
+
+
+        @Override
+        public void start() {
+
+        }
+
+
+        @Override
+        public void failure(HNetError error) {
+
+        }
+
+        @Override
+        public void end() {
+
+        }
+    }
 }
