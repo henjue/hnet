@@ -18,56 +18,64 @@ package org.henjue.library.hnet.typed;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class TypedFile  implements TypedInput, TypedOutput  {
+public class TypedFile implements TypedInput, TypedOutput {
+    private final String filename;
+    protected final String mimeType;
+    protected final InputStream in;
     private static final int BUFFER_SIZE = 4096;
 
-    private final String mimeType;
-    private final File file;
+    public TypedFile(InputStream in, String mimeType, String filename) {
+        if (in == null) {
+            throw new NullPointerException("InputStream");
+        }
+        if (mimeType == null) {
+            throw new NullPointerException("mimeType");
+        }
+        if (filename == null) {
+            throw new NullPointerException("filename");
+        }
+        this.mimeType = mimeType;
+        this.in = in;
+        this.filename = filename;
+    }
 
     /**
      * Constructs a new typed file.
      *
      * @throws NullPointerException if file or mimeType is null
      */
-    public TypedFile(String mimeType, File file) {
-        if (mimeType == null) {
-            throw new NullPointerException("mimeType");
-        }
-        if (file == null) {
-            throw new NullPointerException("file");
-        }
-        this.mimeType = mimeType;
-        this.file = file;
+    public TypedFile(File file, String mimeType) throws FileNotFoundException {
+        this(new FileInputStream(file), mimeType, file.getName());
     }
 
-    /** Returns the file. */
-    public File file() {
-        return file;
+    @Override
+    public long length() {
+        try {
+            return in.available();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
-    @Override public String mimeType() {
+    @Override
+    public String mimeType() {
         return mimeType;
     }
 
-    @Override public long length() {
-        return file.length();
+    @Override
+    public String fileName() {
+        return filename;
     }
 
-    @Override public String fileName() {
-        return file.getName();
-    }
-
-    @Override public InputStream in() throws IOException {
-        return new FileInputStream(file);
-    }
-
-    @Override public void writeTo(OutputStream out) throws IOException {
+    @Override
+    public void writeTo(OutputStream out) throws IOException {
         byte[] buffer = new byte[BUFFER_SIZE];
-        FileInputStream in = new FileInputStream(file);
         try {
             int read;
             while ((read = in.read(buffer)) != -1) {
@@ -78,35 +86,28 @@ public class TypedFile  implements TypedInput, TypedOutput  {
         }
     }
 
-    /**
-     * Atomically moves the contents of this file to a new location.
-     *
-     * @param destination file
-     * @throws java.io.IOException if the move fails
-     */
-    public void moveTo(TypedFile destination) throws IOException {
-        if (!mimeType().equals(destination.mimeType())) {
-            throw new IOException("Type mismatch.");
-        }
-        if (!file.renameTo(destination.file())) {
-            throw new IOException("Rename failed!");
-        }
+    @Override
+    public InputStream in() throws IOException {
+        return this.in;
     }
 
-    @Override public String toString() {
-        return file.getAbsolutePath() + " (" + mimeType() + ")";
-    }
-
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o instanceof TypedFile) {
             TypedFile rhs = (TypedFile) o;
-            return file.equals(rhs.file);
+            return in.equals(rhs.in);
         }
         return false;
     }
 
-    @Override public int hashCode() {
-        return file.hashCode();
+    @Override
+    public int hashCode() {
+        return in.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return in.toString() + " (" + mimeType() + ")";
     }
 }

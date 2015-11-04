@@ -364,7 +364,7 @@ public class RequestBuilder implements RequestFacade {
 
             url.append(relativeUrl);
         } else {
-            url = new StringBuilder(this.apiUrl);
+            url = new StringBuilder(this.relativeUrl);
         }
         StringBuilder queryParams = this.queryParams;
         if (queryParams != null) {

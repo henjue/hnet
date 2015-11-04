@@ -16,7 +16,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 
 
-
 public class GsonConverter implements Converter {
     private final Gson gson;
     private String charset;
@@ -40,9 +39,7 @@ public class GsonConverter implements Converter {
         try {
             isr = new InputStreamReader(body.in(), charset);
             return gson.fromJson(isr, type);
-        } catch (IOException e) {
-            throw new ConversionException(e);
-        } catch (JsonParseException e) {
+        } catch (IOException | JsonParseException e) {
             throw new ConversionException(e);
         } finally {
             if (isr != null) {

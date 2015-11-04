@@ -2,8 +2,6 @@ package org.henjue.hnet.demo;
 
 import android.os.Build;
 
-import com.google.gson.Gson;
-
 import org.henjue.library.hnet.HNet;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -22,9 +20,16 @@ public abstract class AbstractTest implements Executor {
     public void setup() {
         client = new HNet.Builder()
                 .setEndpoint("http://192.168.199.224:8001")
+                .setLog(new HNet.Log() {
+                    @Override
+                    public void log(String message) {
+                        System.out.println(message);
+                    }
+                })
                 .setHttpExecutor(this)
-                .setConverter(new GsonConverter(new Gson())
-                ).build();
+//                .setConverter(new GsonConverter(new Gson()))
+                .build();
+        client.setLogLevel(HNet.LogLevel.FULL);
         before();
     }
 

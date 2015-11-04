@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 
-
 public class HNetError extends RuntimeException {
 
     private final String url;
@@ -111,11 +110,9 @@ public class HNetError extends RuntimeException {
 
     @Override
     public String toString() {
-        StringBuffer sb=new StringBuffer("\n");
-        sb.append("===============================").append("\n");
+        StringBuffer sb = new StringBuffer("\n");
         sb.append("url=").append(url);
-        sb.append("===============================").append("\n");
-        return super.toString()+sb.toString();
+        return super.toString() + sb.toString();
     }
 
     public enum Kind {

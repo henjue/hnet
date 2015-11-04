@@ -61,16 +61,16 @@ public class MethodInfo {
     String endpointUrl = null;
     RequestType requestType;//默认使用类上面的注解定义，方法上的定义将覆盖这个属性
     String requestMethod;
-    boolean needEncode=false;
+    boolean needEncode = false;
     private boolean requestHasBody;
-    boolean appendPath=true;
-    boolean callIntercept=true;
+    boolean appendPath = true;
+    boolean callIntercept = true;
     Class<? extends RequestFilter> filter;
 
-    public MethodInfo(RequestType defaultRequestType,Method method) {
-        if(defaultRequestType==null)defaultRequestType=RequestType.SIMPLE;
+    public MethodInfo(RequestType defaultRequestType, Method method) {
+        if (defaultRequestType == null) defaultRequestType = RequestType.SIMPLE;
         this.method = method;
-        this.defaultRequestType=defaultRequestType;
+        this.defaultRequestType = defaultRequestType;
         responseType = parseResponseType();
         isSynchronous = (responseType == ResponseType.OBJECT);
     }
@@ -134,7 +134,7 @@ public class MethodInfo {
         boolean gotBody = false;
         for (int i = 0; i < count; i++) {
             Annotation[] paramAnnotations = paramAnnotationArrays[i];
-            boolean hasAnnotation=true;
+            boolean hasAnnotation = true;
             for (Annotation annotation : paramAnnotations) {
                 Class<? extends Annotation> annType = annotation.annotationType();
                 if (annType == Query.class) {
@@ -151,12 +151,12 @@ public class MethodInfo {
                         throw parameterError(i, "@Part parameters can only be used with multipart encoding.");
                     }
                     gotPart = true;
-                } else if(annType== Param.class){
+                } else if (annType == Param.class) {
 //                    if (requestType != RequestType.MULTIPART || requestType != RequestType.FORM_URL_ENCODED) {
 //                        throw parameterError(i, "@Parm parameters can only be used with multipart encoding or form encoding.");
 //                    }
-                    gotParam=true;
-                }else if (annType == Body.class) {
+                    gotParam = true;
+                } else if (annType == Body.class) {
                     if (requestType != RequestType.SIMPLE) {
                         throw parameterError(i,
                                 "@Body parameters cannot be used with form or multi-part encoding.");
@@ -166,13 +166,13 @@ public class MethodInfo {
                     }
 
                     gotBody = true;
-                }else{
-                    hasAnnotation=false;
+                } else {
+                    hasAnnotation = false;
                 }
                 requestParamAnnotations[i] = annotation;
             }
-            if(!hasAnnotation){
-                throw methodError("Must has @Field、@Part、@Query or @Path at "+i+" Parameters");
+            if (!hasAnnotation) {
+                throw methodError("Must has @Field、@Part、@Query or @Path at " + i + " Parameters");
             }
         }
         if (requestType == RequestType.SIMPLE && !requestHasBody && gotBody) {
@@ -201,6 +201,7 @@ public class MethodInfo {
     private RuntimeException parameterError(int index, String message, Object... args) {
         return methodError(message + " (parameter #" + (index + 1) + ")", args);
     }
+
     private void parseMethodAnnotations() {
         Annotation[] annotations = method.getAnnotations();
         for (Annotation annotation : annotations) {
@@ -219,15 +220,15 @@ public class MethodInfo {
                 }
                 try {
                     String path = (String) annotationType.getMethod("value").invoke(annotation);
-                    appendPath = (Boolean) annotationType.getMethod("append").invoke(annotation);
+                    appendPath = path != null && !path.startsWith("http") && !path.startsWith("ftp") && !path.replaceAll("\\{.+?\\}", "").isEmpty();
                     callIntercept = (Boolean) annotationType.getMethod("intercept").invoke(annotation);
                     parsePath(path);
                     requestMethod = methodInfo.value();
                     requestHasBody = methodInfo.hasBody();
-                    needEncode=needEncode();
+                    needEncode = needEncode();
                 } catch (Exception e) {
                     throw methodError("Failed to extract String 'value' from @%s annotation.\n%s",
-                            annotationType.getSimpleName(),e.getMessage());
+                            annotationType.getSimpleName(), e.getMessage());
                 }
             } else if (annotationType == Headers.class) {
                 String[] headersToParse = ((Headers) annotation).value();
@@ -235,24 +236,24 @@ public class MethodInfo {
                     throw methodError("@Headers annotation is empty.");
                 }
                 headers = parseHeaders(headersToParse);
-            } else if (annotationType == FormUrlEncoded.class ) {
-                if (requestType !=null) {
+            } else if (annotationType == FormUrlEncoded.class) {
+                if (requestType != null) {
                     throw methodError("Only one encoding annotation is allowed.");
                 }
                 requestType = RequestType.FORM_URL_ENCODED;
             } else if (annotationType == NoneEncoded.class) {
-                if (requestType !=null) {
+                if (requestType != null) {
                     throw methodError("Only one encoding annotation is allowed.");
                 }
                 requestType = RequestType.SIMPLE;
-            }else if (annotationType == Multipart.class ) {
+            } else if (annotationType == Multipart.class) {
                 if (requestType != null) {
                     throw methodError("Only one encoding annotation is allowed.");
                 }
                 requestType = RequestType.MULTIPART;
-            }else if(annotationType==Filter.class){
-                filter=((Filter) annotation).value();
-            } else if (annotationType == Streaming.class ) {
+            } else if (annotationType == Filter.class) {
+                filter = ((Filter) annotation).value();
+            } else if (annotationType == Streaming.class) {
                 if (responseObjectType != Response.class) {
                     throw methodError(
                             "Only methods having %s as data type are allowed to have @%s annotation.",
@@ -264,21 +265,21 @@ public class MethodInfo {
             }
 
         }
-        if(requestType==null){
-            requestType=defaultRequestType;
+        if (requestType == null) {
+            requestType = defaultRequestType;
         }
         if (requestMethod == null) {
             throw methodError("HTTP method annotation is required (e.g., @GET, @POST, etc.).");
         }
-        if(!needEncode){
-            requestType=RequestType.SIMPLE;
+        if (!needEncode) {
+            requestType = RequestType.SIMPLE;
         }
         if (!requestHasBody) {
-            if (requestType == RequestType.MULTIPART ) {
+            if (requestType == RequestType.MULTIPART) {
                 throw methodError(
                         "Multipart can only be specified on HTTP methods with request body (e.g., @POST).");
             }
-            if (requestType == RequestType.FORM_URL_ENCODED ) {
+            if (requestType == RequestType.FORM_URL_ENCODED) {
                 throw methodError("FormUrlEncoded can only be specified on HTTP methods with request body "
                         + "(e.g., @POST).");
             }
@@ -386,7 +387,7 @@ public class MethodInfo {
         OBJECT
     }
 
-    private boolean needEncode(){
+    private boolean needEncode() {
         return !requestMethod.equalsIgnoreCase("get");
     }
 }

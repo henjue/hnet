@@ -52,10 +52,11 @@ public class UrlConnecttionStack implements ClientStack {
         if (body != null) {
             connection.setDoOutput(true);
             long length = body.length();
-            if (length == -1 || body.mimeType().startsWith("multipart/form-data")) {
+            connection.addRequestProperty("Content-Type", body.mimeType());
+            if (length == -1) {
                 connection.setChunkedStreamingMode(CHUNK_SIZE);
             } else {
-                connection.addRequestProperty("Content-Type", body.mimeType());
+                connection.setFixedLengthStreamingMode((int) length);
                 connection.addRequestProperty("Content-Length", String.valueOf(length));
             }
             body.writeTo(connection.getOutputStream());
