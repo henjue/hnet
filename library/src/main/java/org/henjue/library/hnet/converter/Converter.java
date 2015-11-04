@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 
 
 public interface Converter {
+    boolean match(Type type);
 
     Object fromBody(TypedInput body, Type type) throws ConversionException;
 

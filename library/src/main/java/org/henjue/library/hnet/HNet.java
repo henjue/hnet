@@ -21,6 +21,7 @@ import android.os.Looper;
 import org.henjue.library.hnet.anntoation.FormUrlEncoded;
 import org.henjue.library.hnet.anntoation.Multipart;
 import org.henjue.library.hnet.converter.Converter;
+import org.henjue.library.hnet.converter.ConverterChain;
 import org.henjue.library.hnet.converter.StringConverter;
 import org.henjue.library.hnet.exception.ConversionException;
 import org.henjue.library.hnet.exception.HNetError;
@@ -51,7 +52,7 @@ public class HNet {
     static final String IDLE_THREAD_NAME = THREAD_PREFIX + "Idle";
     final Executor httpExecutor;
     final Executor callbackExecutor;
-    final Converter converter;
+    final ConverterChain converter;
     final Log log;
     final Endpoint server;
     final ErrorHandler errorHandler;
@@ -59,7 +60,7 @@ public class HNet {
     private final ClientStack.Provider clientProvider;
     volatile LogLevel logLevel;
 
-    private HNet(Endpoint server, ClientStack.Provider clientProvider, RequestIntercept intercept, Executor httpExecutor, Executor callbackExecutor, Converter converter, ErrorHandler errorHandler, Log log, LogLevel logLevel) {
+    private HNet(Endpoint server, ClientStack.Provider clientProvider, RequestIntercept intercept, Executor httpExecutor, Executor callbackExecutor, ConverterChain converter, ErrorHandler errorHandler, Log log, LogLevel logLevel) {
         this.server = server;
         this.clientProvider = clientProvider;
         this.intercept = intercept;
@@ -228,10 +229,13 @@ public class HNet {
     }
 
     public static class Builder {
+        public Builder() {
+            converter = new ConverterChain();
+        }
 
         private Executor httpExecutor;
         private Executor callbackExecutor;
-        private Converter converter;
+        private ConverterChain converter;
         private Endpoint endpoint;
         private ClientStack.Provider clientProvider;
         private ErrorHandler errorHandler;
@@ -255,8 +259,14 @@ public class HNet {
             return logLevel;
         }
 
+        @Deprecated
         public Builder setConverter(Converter converter) {
-            this.converter = converter;
+            this.converter.add(converter);
+            return this;
+        }
+
+        public Builder addConverter(Converter converter) {
+            this.converter.add(converter);
             return this;
         }
 
@@ -348,9 +358,6 @@ public class HNet {
                         return tag;
                     }
                 };
-            }
-            if (converter == null) {
-                converter = new StringConverter();
             }
             if (clientProvider == null) {
                 clientProvider = new ClientStack.Provider() {
@@ -479,8 +486,10 @@ public class HNet {
                     }
 
                     ExceptionCatchingTypedInput wrapped = new ExceptionCatchingTypedInput(body);
+
                     try {
-                        Object convert = converter.fromBody(wrapped, type);
+                        Converter match = converter.match(type);
+                        Object convert = match.fromBody(wrapped, type);
                         logResponseBody(body, convert);
                         if (methodInfo.isSynchronous) {
                             return convert;
@@ -492,11 +501,11 @@ public class HNet {
                             throw wrapped.getThrownException();
                         }
                         response = Utils.replaceResponseBody(response, null);
-                        throw HNetError.conversionError(url, response, converter, type, e);
+                        throw HNetError.conversionError(url, response, new StringConverter(), type, e);
                     }
                 }
                 response = Utils.readBodyToBytesIfNecessary(response);
-                throw HNetError.httpError(url, response, converter, type);
+                throw HNetError.httpError(url, response, new StringConverter(), type);
             } catch (HNetError e) {
                 throw e;
             } catch (IOException e) {

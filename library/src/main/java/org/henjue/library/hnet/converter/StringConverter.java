@@ -37,6 +37,11 @@ public class StringConverter implements Converter {
     }
 
     @Override
+    public boolean match(Type type) {
+        return String.class.equals(type);
+    }
+
+    @Override
     public Object fromBody(TypedInput body, Type type) {
         String charset = this.charset;
         if (body.mimeType() != null) {

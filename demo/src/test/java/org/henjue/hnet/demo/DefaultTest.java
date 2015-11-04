@@ -1,8 +1,11 @@
 package org.henjue.hnet.demo;
 
+import org.henjue.hnet.demo.model.User;
 import org.henjue.library.hnet.Callback;
 import org.henjue.library.hnet.Response;
 import org.junit.Test;
+
+import java.util.ArrayList;
 
 /**
  * Created by android on 2015/11/4.
@@ -20,7 +23,7 @@ public class DefaultTest extends AbstractTest {
     public void testListAll() {
         testAddUser();
         testAddUser();
-        String users = service.list();
+        ArrayList<User> users = service.list();
         assert users != null;
     }
 

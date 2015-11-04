@@ -30,6 +30,11 @@ public class GsonConverter implements Converter {
     }
 
     @Override
+    public boolean match(Type type) {
+        return false;
+    }
+
+    @Override
     public Object fromBody(TypedInput body, Type type) throws ConversionException {
         String charset = this.charset;
         if (body.mimeType() != null) {

@@ -20,7 +20,7 @@ import org.henjue.library.hnet.anntoation.Param;
 import org.henjue.library.hnet.anntoation.Part;
 import org.henjue.library.hnet.anntoation.Path;
 import org.henjue.library.hnet.anntoation.Query;
-import org.henjue.library.hnet.converter.Converter;
+import org.henjue.library.hnet.converter.ConverterChain;
 import org.henjue.library.hnet.typed.FormUrlEncodedTypedOutput;
 import org.henjue.library.hnet.typed.MultipartTypedOutput;
 import org.henjue.library.hnet.typed.TypedOutput;
@@ -40,7 +40,7 @@ import java.util.List;
 public class RequestBuilder implements RequestFacade {
     private final Annotation[] paramAnnotations;
     private final boolean isSync;
-    private final Converter converter;
+    private final ConverterChain converter;
     private final String apiUrl;
     private final FormUrlEncodedTypedOutput formBody;
     private final MultipartTypedOutput multipartBody;
@@ -56,7 +56,7 @@ public class RequestBuilder implements RequestFacade {
     private List<Header> headers;
     private String contentTypeHeader;
 
-    RequestBuilder(String apiUrl, RequestFilter filter, boolean callIntercept, boolean appendPath, MethodInfo info, Converter converter, RequestIntercept intercept) {
+    RequestBuilder(String apiUrl, RequestFilter filter, boolean callIntercept, boolean appendPath, MethodInfo info, ConverterChain converter, RequestIntercept intercept) {
         if (info.endpointUrl == null) {
             this.apiUrl = apiUrl;
         } else {
@@ -185,7 +185,7 @@ public class RequestBuilder implements RequestFacade {
                 if (value instanceof TypedOutput) {
                     body = (TypedOutput) value;
                 } else {
-                    body = converter.toBody(value);
+                    body = converter.match(value.getClass().getGenericSuperclass()).toBody(value);
                 }
             } else {
                 throw new IllegalArgumentException(
@@ -316,7 +316,7 @@ public class RequestBuilder implements RequestFacade {
         } else if (obj instanceof String) {
             multipartBody.addPart(name, transferEncoding, new TypedString((String) obj));
         } else {
-            multipartBody.addPart(name, transferEncoding, converter.toBody(obj));
+            multipartBody.addPart(name, transferEncoding, converter.match(obj.getClass().getGenericSuperclass()).toBody(obj));
         }
         filter.onAdd(name, obj);
         if (callIntercept) intercept.onAdd(name, obj);
