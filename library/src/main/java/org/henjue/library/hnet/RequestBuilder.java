@@ -196,6 +196,12 @@ public class RequestBuilder implements RequestFacade {
     }
 
     private void addToForm(String key, Object value, boolean encodeName, boolean encodeValue) {
+        if (key == null) {
+            throw new IllegalArgumentException("Form param name must not be null.");
+        }
+        if (value == null) {
+            return;
+        }
         if (value instanceof Iterable) {
             for (Object iterableValue : (Iterable<?>) value) {
                 if (iterableValue != null) { // Skip null values.
