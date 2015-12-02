@@ -23,7 +23,8 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * 如果在接口用默认使用了注解{@link FormUrlEncoded} 或 注解{@link Multipart}<br/>
+ * 如果在接口用默认使用了注解{@link FormUrlEncoded} 或 注解{@link Multipart}
+ * <p>
  * 那么在get的方法上必须使用注解{@link NoneEncoded}
  * </p>
  */
