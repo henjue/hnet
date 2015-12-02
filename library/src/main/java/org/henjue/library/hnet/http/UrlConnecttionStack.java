@@ -1,5 +1,7 @@
 package org.henjue.library.hnet.http;
 
+import android.os.Build;
+
 import org.henjue.library.hnet.Defaults;
 import org.henjue.library.hnet.Header;
 import org.henjue.library.hnet.Request;
@@ -37,6 +39,9 @@ public class UrlConnecttionStack implements ClientStack {
                 (HttpURLConnection) new URL(request.getUrl()).openConnection();
         connection.setConnectTimeout(Defaults.CONNECT_TIMEOUT_MILLIS);
         connection.setReadTimeout(Defaults.READ_TIMEOUT_MILLIS);
+        if(Build.VERSION.SDK_INT>13){
+            connection.setRequestProperty("Connection", "close");
+        }
         return connection;
     }
 
