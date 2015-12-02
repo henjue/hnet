@@ -19,8 +19,6 @@ Use Document to [See](http://www.j99.so/2015/07/12/HNet-Android-Fast-Network-Fra
 -keep class * implements org.henjue.library.hnet.RequestFilter {*;}
 ```
 
-
-
 ## 注解说明
 ```java
 @Post 和 @Get 请求方式，参数为请求的path其他参数自己看注释或代码
